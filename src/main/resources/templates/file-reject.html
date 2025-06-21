@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>파일 확장자 관리</title>
+    <script src="/js/file-reject.js" defer></script>
+    <link rel="stylesheet" href="/css/file-reject.css">
+</head>
+<body>
+<h2>고정 확장자</h2>
+<div id="default-extensions"></div>
+
+<hr/>
+
+<h2>커스텀 확장자</h2>
+<input type="text" id="custom-extension" placeholder="확장자를 입력하세요 (예: zip)">
+<button onclick="addCustomExtension()">추가</button>
+<p id="error-message" style="color: red;"></p>
+
+<hr/>
+
+<h2>현재 커스텀 확장자 목록</h2>
+<div id="custom-extensions"></div>
+</body>
+</html>
