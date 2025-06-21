@@ -18,31 +18,40 @@ public class FileRejectService {
     private final FileRejectRepository fileRejectRepository;
 
     // 확장자 등록
-    // todo:: 최대 200개 제한 (기본 확장자 제외)
     @Transactional
     public FileRejectRspDto createFileReject(FileRejectReqDto dto) {
-        String ext = dto.getExtension();
+        String ext = dto.getExtension().toLowerCase();  // 소문자 통일
         FileReject fileReject = fileRejectRepository.findByExtension(ext).orElse(null);
 
         // 새로운 확장자 등록
         if(fileReject == null) {
-            // 새로운 확장자 등록
+            // 최대 200개 제한
+            List<FileReject> allByCheckedTrue = fileRejectRepository.findAllByCheckedTrue();
+            if (allByCheckedTrue.size() > 208)
+                throw new BusinessException(ErrorCode.FULL_EXTENSION);
+
             FileReject newFileReject = FileReject.builder()
                     .extension(ext)
                     .checked(true)
+                    .isDefault(false)
                     .build();
             fileRejectRepository.save(newFileReject);
             return FileRejectRspDto.from(newFileReject);
         }
-        // 비활성화인 경우 활성화
-        else if (Boolean.FALSE.equals(fileReject.getChecked())) {
+
+        // 기존 값 토글
+        if(Boolean.TRUE.equals(fileReject.getIsDefault())) {
+            if(Boolean.TRUE.equals(fileReject.getChecked())) fileReject.uncheck();
+            else fileReject.check();
+            return FileRejectRspDto.from(fileReject);
+        }
+
+        if(Boolean.FALSE.equals(fileReject.getChecked())) {
             fileReject.check();
             return FileRejectRspDto.from(fileReject);
         }
-        // 이미 활성화인 경우
-        // todo:: 기본 확장자를 추가했을 때 오류
-        else
-            throw new BusinessException(ErrorCode.ALREADY_EXTENSION);
+
+        throw new BusinessException(ErrorCode.ALREADY_EXTENSION);
     }
 
     // 확장자 조회

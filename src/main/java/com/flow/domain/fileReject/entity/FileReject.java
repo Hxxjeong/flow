@@ -21,10 +21,14 @@ public class FileReject {
     @Column(name = "checked")
     private Boolean checked;
 
+    @Column(name = "is_default", nullable = false)
+    private Boolean isDefault = false;
+
     @Builder
-    private FileReject(String extension, Boolean checked) {
+    private FileReject(String extension, Boolean checked, Boolean isDefault) {
         this.extension = extension;
         this.checked = checked;
+        this.isDefault = isDefault;
     }
 
     public void check() {
