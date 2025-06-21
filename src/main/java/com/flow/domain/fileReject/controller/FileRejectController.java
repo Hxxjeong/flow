@@ -18,7 +18,7 @@ public class FileRejectController {
 
     // 확장자 등록
     @PostMapping
-    public RspTemplate<FileRejectRspDto> createFileReject(@RequestBody FileRejectReqDto reqDTO) {
+    public RspTemplate<List<FileRejectRspDto>> createFileReject(@RequestBody FileRejectReqDto reqDTO) {
         return new RspTemplate<>(HttpStatus.CREATED, "파일 확장자가 등록되었습니다.", fileRejectService.createFileReject(reqDTO));
     }
 

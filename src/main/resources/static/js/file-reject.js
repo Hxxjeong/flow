@@ -2,7 +2,16 @@ const defaultExtensionsSet = new Set(["bat", "cmd", "com", "cpl", "exe", "scr", 
 
 document.addEventListener("DOMContentLoaded", () => {
     loadExtensions();
+
+    const input = document.getElementById("custom-extension");
+    input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            addCustomExtension();
+        }
+    });
 });
+
 
 function loadExtensions() {
     fetch("/file-reject")
@@ -119,6 +128,9 @@ function addCustomExtension() {
 }
 
 function deleteExtension(id) {
+    const confirmed = confirm("확장자를 삭제하시겠습니까?");
+    if (!confirmed) return;
+
     fetch(`/file-reject/${id}`, {
         method: "DELETE"
     })
