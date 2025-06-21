@@ -7,7 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -18,11 +17,16 @@ public class FileRejectInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        for (String ext : DEFAULT_EXTENSIONS) {
-            fileRejectRepository.findByExtension(ext)
-                    .or(() -> Optional.of(fileRejectRepository.save(
-                            FileReject.builder().extension(ext).checked(false).build()
-                    )));
+        for(String ext: DEFAULT_EXTENSIONS) {
+            if(fileRejectRepository.findByExtension(ext).isEmpty()) {
+                fileRejectRepository.save(
+                        FileReject.builder()
+                                .extension(ext)
+                                .checked(false)
+                                .isDefault(true)  // 기본 확장자 표시
+                                .build()
+                );
+            }
         }
     }
 }
